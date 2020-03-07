@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtt.bbs.dao.forum.ArticleTypeDao">
+    <resultMap id="typeMap" type="com.qtt.bbs.model.entity.ArticleType">
+        <id property="id" column="id"/>
+        <result property="typeName" column="typename"/>
+        <result property="info" column="info"/>
+    </resultMap>
+
+    <insert id="save">
+        insert into tb_articletype(typename, info)
+        VALUES (#{typeName}, #{info})
+    </insert>
+
+    <delete id="delete">
+        delete from tb_articletype where id = #{id}
+    </delete>
+
+    <select id="selectAll" resultMap="typeMap">
+        select * from tb_articletype
+    </select>
+</mapper>

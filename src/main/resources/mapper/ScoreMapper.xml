@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtt.bbs.dao.forum.ScoreDao">
+    <resultMap id="scoreMap" type="com.qtt.bbs.model.entity.Score">
+        <id property="id" column="id"/>
+        <result property="uid" column="uid"/>
+        <result property="score" column="score"/>
+        <result property="info" column="info"/>
+        <result property="ctime" column="ctime"/>
+    </resultMap>
+
+    <insert id="add">
+        insert into tb_score(uid, score, info, ctime) VALUES (#{uid}, #{score}, #{info}, #{ctime})
+    </insert>
+</mapper>

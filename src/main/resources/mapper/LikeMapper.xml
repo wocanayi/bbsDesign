@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtt.bbs.dao.forum.LikeDao">
+    <resultMap id="likeMap" type="com.qtt.bbs.model.entity.Like">
+        <id property="id" column="id"/>
+        <result property="aid" column="aid"/>
+        <result property="uid" column="uid"/>
+    </resultMap>
+
+    <insert id="addLike">
+        insert into tb_like(aid, uid) VALUES (#{aid}, #{uid})
+    </insert>
+
+    <select id="selectByUid" resultMap="likeMap">
+        select * from tb_like where uid = #{uid} and aid = #{aid}
+    </select>
+
+    <delete id="delLike">
+        delete from tb_like where id = #{id}
+    </delete>
+
+    <select id="likeNum" resultType="Integer">
+        select count(1) from tb_like where aid = #{aid} group by aid
+    </select>
+</mapper>

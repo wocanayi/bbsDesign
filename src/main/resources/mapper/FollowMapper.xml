@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtt.bbs.dao.forum.FollowDao">
+    <resultMap id="followMap" type="com.qtt.bbs.model.entity.Follow">
+        <id property="id" column="id"/>
+        <result property="uid" column="uid"/>
+        <result property="followId" column="followid"/>
+    </resultMap>
+
+    <insert id="addFollow">
+        insert tb_follow(uid, followid) VALUES (#{uid}, #{followId})
+    </insert>
+
+    <delete id="delFollow">
+        delete from tb_follow where id = #{id}
+    </delete>
+
+    <select id="allFollows" resultType="com.qtt.bbs.model.dto.forum.FollowDto">
+        select f.uid, f.followid, u.nickname, u.avatarurl
+        from tb_follow f, tb_user u where u.uid = f.uid and u.uid = #{uid}
+    </select>
+</mapper>

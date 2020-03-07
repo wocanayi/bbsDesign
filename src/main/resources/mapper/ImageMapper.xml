@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtt.bbs.dao.forum.ImageDao">
+    <resultMap id="imageMap" type="com.qtt.bbs.model.entity.Image">
+        <id property="id" column="id"/>
+        <result property="imgUrl" column="imgurl"/>
+        <result property="ctime" column="ctime"/>
+        <result property="info" column="info"/>
+        <result property="aid" column="aid"/>
+    </resultMap>
+
+    <insert id="uploadPictures">
+        insert into tb_image(imgurl, ctime, info, aid) VALUES
+        <!--<foreach collection="list" item="item" index="index" separator=",">-->
+            (#{imgUrl}, NOW(), #{info}, #{aid})
+        <!--</foreach>-->
+    </insert>
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtt.bbs.dao.ribon.WeatherDao">
+    <resultMap id="weatherMap" type="com.qtt.bbs.model.entity.Weather">
+        <id property="id" column="id"/>
+        <result property="city" column="city"/>
+        <result property="citycode" column="citycode"/>
+        <result property="cdate" column="cdate"/>
+        <result property="week" column="week"/>
+        <result property="weather" column="weather"/>
+        <result property="temphigh" column="temphigh"/>
+        <result property="templow" column="templow"/>
+        <result property="winddirect" column="winddirect"/>
+        <result property="windpower" column="windpower"/>
+        <result property="ctime" column="ctime"/>
+    </resultMap>
+
+    <select id="getByCityAndCdate" resultMap="weatherMap">
+        select * from tb_weather where city = #{city} and cdate = #{cdate}
+    </select>
+
+    <insert id="save">
+        insert into tb_weather(city, citycode, cdate, week, weather, temphigh, templow, winddirect, windpower, ctime)
+        VALUES (#{city}, #{citycode}, #{cdate}, #{week}, #{weather}, #{temphigh}, #{templow}, #{winddirect},
+                #{windpower}, now())
+    </insert>
+</mapper>

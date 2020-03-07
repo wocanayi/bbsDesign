@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtt.bbs.dao.forum.CommentDao">
+    <resultMap id="commentMap" type="com.qtt.bbs.model.entity.Comment">
+        <id property="id" column="id"/>
+        <result property="articleId" column="articleid"/>
+        <result property="uid" column="uid"/>
+        <result property="content" column="content"/>
+        <result property="ctime" column="ctime"/>
+        <result property="authorId" column="authorid"/>
+        <result property="fatherId" column="fatherid"/>
+    </resultMap>
+
+    <insert id="addComment">
+        insert into tb_comment(articleid, uid, content, ctime, authorid, fatherid)
+        VALUES (#{articleId}, #{uid}, #{content}, NOW(), #{authorId}, #{fatherId})
+    </insert>
+
+    <delete id="delete" parameterType="int">
+        delete from tb_comment where id = #{id}
+    </delete>
+
+    <select id="selectByAid" resultType="com.qtt.bbs.model.dto.forum.CommentDto">
+        select c.*, u.avatarurl, u.nickname
+        from tb_comment c, tb_user u where c.uid = u.uid and c.articleid = #{aid}
+    </select>
+
+    <select id="findByFatherId" resultType="com.qtt.bbs.model.dto.forum.CommentDto">
+        select c.*, u.avatarurl, u.nickname
+        from tb_comment c, tb_user u where c.uid = u.uid and c.fatherid = #{fid}
+    </select>
+</mapper>

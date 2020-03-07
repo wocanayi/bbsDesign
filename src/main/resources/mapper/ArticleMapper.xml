@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtt.bbs.dao.forum.ArticleDao">
+    <resultMap id="articleMap" type="com.qtt.bbs.model.entity.Article">
+        <id property="id" column="id"/>
+        <result property="typeId" column="typeid"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="ctime" column="ctime"/>
+        <result property="origin" column="origin"/>
+        <result property="info" column="info"/>
+        <result property="readNum" column="readnum"/>
+        <result property="uid" column="uid"/>
+    </resultMap>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into tb_article(typeid, title, content, ctime, origin, info, readnum, uid)
+        VALUES (#{typeId}, #{title}, #{content}, NOW(), #{origin}, #{info}, 0, #{uid})
+    </insert>
+
+    <delete id="delete" parameterType="int">
+        delete from tb_article where id = #{id}
+    </delete>
+
+    <select id="findById" resultMap="articleMap">
+        select *
+        from tb_article
+        where id = #{id}
+    </select>
+
+    <select id="findByUid" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
+        select a.id,
+               a.typeid,
+               a.title,
+               a.content,
+               a.ctime,
+               a.origin,
+               a.info,
+               a.readnum,
+               a.uid,
+               u.nickname,
+               u.avatarurl
+        from tb_article a,
+             tb_user u
+        where a.uid = u.uid
+          and a.uid = #{uid}
+    </select>
+
+    <select id="selectAll" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
+        select a.id,
+               a.typeid,
+               a.title,
+               a.content,
+               a.ctime,
+               a.origin,
+               a.info,
+               a.readnum,
+               a.uid,
+               u.nickname,
+               u.avatarurl
+        from tb_article a,
+             tb_user u
+        where a.uid = u.uid
+    </select>
+
+    <select id="getArticles" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
+        select a.id,
+               a.typeid,
+               a.title,
+               a.content,
+               a.ctime,
+               a.origin,
+               a.info,
+               a.readnum,
+               a.uid,
+               u.nickname,
+               u.avatarurl
+        from tb_article a,
+             tb_user u
+        where a.uid = u.uid
+    </select>
+
+    <select id="fuzzySearch" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
+        select a.id,
+               a.typeid,
+               a.title,
+               a.content,
+               a.ctime,
+               a.origin,
+               a.info,
+               a.readnum,
+               a.uid,
+               u.nickname,
+               u.avatarurl
+        from tb_article a,
+             tb_user u
+        where a.uid = u.uid and
+              (title like concat('%', #{title}, '%') or content like concat('%', #{content}, '%'))
+
+    </select>
+
+    <update id="addReadNum">
+        update tb_article set readnum = readnum + 1 where id = #{id}
+    </update>
+
+</mapper>

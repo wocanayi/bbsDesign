@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtt.bbs.dao.forum.UserLoginDao">
+    <resultMap id="loginMap" type="com.qtt.bbs.model.entity.UserLogin">
+        <id property="id" column="id"/>
+        <result property="uid" column="uid"/>
+        <result property="days" column="days"/>
+        <result property="ctime" column="ctime"/>
+    </resultMap>
+
+    <insert id="save">
+        insert into tb_userlogin(uid, days, ctime) VALUES (#{uid}, #{days}, #{ctime})
+    </insert>
+
+    <select id="selectAll" resultMap="loginMap">
+        select * from tb_userlogin where uid = #{uid}
+    </select>
+</mapper>

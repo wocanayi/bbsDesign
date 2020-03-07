@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtt.bbs.dao.ribon.HitoDao">
+    <resultMap id="hitoMap" type="com.qtt.bbs.model.entity.Hito">
+        <id property="id" column="id"/>
+        <result property="hitokoto" column="hitokoto"/>
+        <result property="typ" column="typ"/>
+        <result property="fro" column="fro"/>
+        <result property="creator" column="creator"/>
+    </resultMap>
+
+    <insert id="save">
+        insert into tb_hito(hitokoto, typ, fro, creator)
+        VALUES (#{hitokoto}, #{typ}, #{fro}, #{creator})
+    </insert>
+</mapper>

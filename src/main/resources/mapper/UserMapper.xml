@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtt.bbs.dao.forum.UserDao">
+    <resultMap id="masterMap" type="com.qtt.bbs.model.entity.User">
+        <id property="id" column="id"/>
+        <result property="uid" column="uid"/>
+        <result property="nickName" column="nickname"/>
+        <result property="gender" column="gender"/>
+        <result property="city" column="city"/>
+        <result property="avatarUrl" column="avatarurl"/>
+        <result property="unionId" column="unionid"/>
+        <result property="balance" column="balance"/>
+    </resultMap>
+
+    <select id="selectByUid" resultMap="masterMap">
+        select *
+        from tb_user
+        where uid = #{uid}
+    </select>
+
+    <update id="updateScore">
+        update tb_user set balance = balance + #{score} where uid = #{uid}
+    </update>
+
+    <insert id="insert">
+        insert into tb_user(uid, nickname, gender, city, avatarurl, unionid, balance)
+        VALUES (#{uid}, #{nickname}, #{gender}, #{city}, #{avatarurl}, #{unionid}, #{balance})
+    </insert>
+</mapper>
