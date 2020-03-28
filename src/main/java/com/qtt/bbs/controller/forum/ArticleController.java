@@ -64,7 +64,19 @@ public class ArticleController {
     @ApiOperation(value = "查询关注博主的帖子", notes = "查询关注博主的帖子")
     @GetMapping("/article/selectFollow.do")
     public R selectFollow(@RequestParam String uid) {
-        return articleService.findByUid(uid);
+        return articleService.selectFollow(uid);
+    }
+
+    @ApiOperation(value = "查询推荐的帖子", notes = "查询推荐的帖子")
+    @GetMapping("/article/selectTop.do")
+    public R selectTop() {
+        return articleService.selectTop();
+    }
+
+    @ApiOperation(value = "根据类型查找帖子", notes = "根据类型查找帖子")
+    @GetMapping("/article/findByType.do")
+    public R findByType(@RequestParam int typeId) {
+        return articleService.findByType(typeId);
     }
 
     @ApiOperation(value = "根据标题或内容模糊查询", notes = "根据标题或内容模糊查询")

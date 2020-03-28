@@ -26,10 +26,24 @@
         delete from tb_article where id = #{id}
     </delete>
 
-    <select id="findById" resultMap="articleMap">
-        select *
-        from tb_article
-        where id = #{id}
+    <select id="findById" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
+        select a.id,
+               a.typeid,
+               a.title,
+               a.content,
+               a.ctime,
+               a.origin,
+               a.info,
+               a.readnum,
+               a.uid,
+               (select count(1) from tb_like where aid = #{id} group by aid) likeNum,
+               (select count(1) from tb_comment where articleid = #{id} group by articleid) commentNum,
+               a.readnum,
+               u.nickname,
+               u.avatarurl
+        from tb_article a,
+             tb_user u
+        where a.uid = u.uid and a.id = #{id}
     </select>
 
     <select id="findByUid" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
@@ -42,6 +56,9 @@
                a.info,
                a.readnum,
                a.uid,
+               a.readnum,
+               (select count(1) from tb_like where uid = #{uid} group by aid) likeNum,
+               (select count(1) from tb_comment where uid = #{uid} group by articleid) commentNum,
                u.nickname,
                u.avatarurl
         from tb_article a,
@@ -50,6 +67,27 @@
           and a.uid = #{uid}
     </select>
 
+    <select id="selectFollow" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
+        select a.id,
+               a.typeid,
+               a.title,
+               a.content,
+               a.ctime,
+               a.origin,
+               a.info,
+               a.readnum,
+               a.uid,
+               a.readnum,
+               (select count(1) from tb_like where uid = #{uid} group by aid) likeNum,
+               (select count(1) from tb_comment where uid = #{uid} group by articleid) commentNum,
+               u.nickname,
+               u.avatarurl
+        from tb_article a, tb_user u where u.uid = a.uid and a.uid in (select followid from tb_follow where uid = #{uid})
+    </select>
+
+    <select id="articleNum" resultType="long">
+        select count(1) from tb_article a, tb_user u where u.uid = a.uid
+    </select>
     <select id="selectAll" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
         select a.id,
                a.typeid,
@@ -60,6 +98,7 @@
                a.info,
                a.readnum,
                a.uid,
+               a.readnum,
                u.nickname,
                u.avatarurl
         from tb_article a,
@@ -77,11 +116,48 @@
                a.info,
                a.readnum,
                a.uid,
+               a.readnum,
                u.nickname,
                u.avatarurl
         from tb_article a,
              tb_user u
-        where a.uid = u.uid
+        where a.uid = u.uid limit #{page}, #{size}
+    </select>
+
+    <select id="selectTop" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
+        select a.id,
+               a.typeid,
+               a.title,
+               a.content,
+               a.ctime,
+               a.origin,
+               a.info,
+               a.readnum,
+               a.uid,
+               a.readnum,
+               u.nickname,
+               u.avatarurl
+        from tb_article a,
+             tb_user u
+        where a.uid = u.uid order by readnum desc
+    </select>
+
+    <select id="findByType" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
+        select a.id,
+               a.typeid,
+               a.title,
+               a.content,
+               a.ctime,
+               a.origin,
+               a.info,
+               a.readnum,
+               a.uid,
+               a.readnum,
+               u.nickname,
+               u.avatarurl
+        from tb_article a,
+             tb_user u
+        where a.uid = u.uid and typeid = #{typeId}
     </select>
 
     <select id="fuzzySearch" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
@@ -100,7 +176,6 @@
              tb_user u
         where a.uid = u.uid and
               (title like concat('%', #{title}, '%') or content like concat('%', #{content}, '%'))
-
     </select>
 
     <update id="addReadNum">

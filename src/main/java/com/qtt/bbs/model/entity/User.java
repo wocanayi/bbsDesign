@@ -1,5 +1,6 @@
 package com.qtt.bbs.model.entity;
 
+import com.qtt.bbs.model.dto.en.Gender;
 import lombok.Data;
 
 /**

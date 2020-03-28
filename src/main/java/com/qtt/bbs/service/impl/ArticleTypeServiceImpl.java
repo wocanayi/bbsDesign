@@ -26,7 +26,7 @@ public class ArticleTypeServiceImpl implements ArticleTypeService {
     @Override
     public R save(ArticleType articleType) {
         if (typeDao.save(articleType) > 0) {
-            return R.ok(typeDao.save(articleType));
+            return R.ok("成功");
         } else {
             return R.fail("fail!");
         }
@@ -48,6 +48,26 @@ public class ArticleTypeServiceImpl implements ArticleTypeService {
             return R.fail("暂无！");
         } else {
             return R.ok(articleTypes);
+        }
+    }
+
+    @Override
+    public R selectTypeNums(int typeId) {
+        Long aLong = typeDao.typeNums(typeId);
+        if (aLong == null) {
+            return R.fail("暂无发帖！");
+        } else {
+            return R.ok(aLong);
+        }
+    }
+
+    @Override
+    public R findByTypeId(int id) {
+        ArticleType byTypeId = typeDao.findByTypeId(id);
+        if (byTypeId != null) {
+            return R.ok(byTypeId);
+        } else {
+            return R.fail();
         }
     }
 }

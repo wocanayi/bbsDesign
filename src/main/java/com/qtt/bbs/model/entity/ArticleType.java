@@ -15,4 +15,5 @@ public class ArticleType {
     private Integer id;
     private String typeName;
     private String info;
+    private String imageUrl;
 }

@@ -1,19 +1,21 @@
 package com.qtt.bbs.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.qtt.bbs.common.system.AppContext;
 import com.qtt.bbs.common.util.AesCbcUtil;
 import com.qtt.bbs.common.util.HttpUtil;
 import com.qtt.bbs.common.vo.R;
 import com.qtt.bbs.dao.forum.ScoreDao;
 import com.qtt.bbs.dao.forum.UserDao;
 import com.qtt.bbs.dao.forum.UserLoginDao;
+import com.qtt.bbs.model.dto.forum.UserDetail;
+import com.qtt.bbs.model.dto.forum.UserDto;
 import com.qtt.bbs.model.dto.forum.WxLoginDto;
 import com.qtt.bbs.model.entity.Score;
 import com.qtt.bbs.model.entity.User;
 import com.qtt.bbs.model.entity.UserLogin;
 import com.qtt.bbs.service.UserService;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,7 +96,8 @@ public class UserServiceImpl implements UserService {
                 score1.setScore(score);
                 score1.setUid(loginDto.getOpenid());
                 scoreDao.add(score1);
-                return R.ok(loginDto.getOpenid());
+                AppContext.setAppContext(loginDto.getOpenid());
+                return R.ok(loginDto);
             } else {
                 return R.fail(loginDto.getErrmsg());
             }
@@ -104,45 +107,38 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public R loginAndUserInfo(String encryptedData, String iv, String code) {
-        Map map = new HashMap();
-        if (null == code || code.length() == 0) {
-            map.put("status", 0);
-            map.put("msg", "code 不能为空");
-            return R.fail(map);
+    public R getUserInfo(String data) {
+        User user = userDao.selectByUid(AppContext.getAppContext());
+        UserDto userDto = JSONObject.parseObject(data, UserDto.class);
+        user.setAvatarUrl(userDto.getAvatarUrl());
+        user.setNickName(userDto.getNickName());
+        user.setCity(userDto.getCity());
+        user.setGender(userDto.getGender());
+        int i = userDao.updateUserInfo(user);
+        if (i > 0) {
+            return R.ok("成功！");
+        } else {
+            return R.fail("失败！");
         }
-        String AppId = "wxd79e3bc4c295725f";
-        String AppSecret = "09288d3990b4eaf3882dc3b5255373d1";
-        String str = HttpUtil.getJson("https://api.weixin.qq.com/sns/jscode2session?appid=" + AppId + "&secret=" + AppSecret + "&js_code=" + code + "&grant_type=authorization_code");
-        try {
-            JSONObject json = new JSONObject(str);
-            String session_key = json.get("session_key").toString();
-            String openid = (String)json.get("openid");
-            String result = AesCbcUtil.decrypt(encryptedData, session_key, iv, "UTF-8");
-            if (null != result && result.length() > 0) {
-                map.put("status", 1);
-                map.put("msg", "解密成功！");
+    }
 
-                JSONObject userInfoJson = new JSONObject(result);
-                User user1 = userDao.selectByUid((String) userInfoJson.get("openId"));
-                if (null == user1) {
-                    User user = new User();
-                    user.setUid((String) userInfoJson.get("openId"));
-                    user.setNickName((String) userInfoJson.get("nickName"));
-                    user.setGender((Integer) userInfoJson.get("gender"));
-                    user.setCity((String) userInfoJson.get("city"));
-                    user.setAvatarUrl((String) userInfoJson.get("avatarUrl"));
-                    user.setUnionId((String) userInfoJson.get("unionId"));
-                    userDao.insert(user);
-                }
-            } else {
-                map.put("status", 0);
-                map.put("msg", "解密失败！");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+    @Override
+    public R userDetail(String uid) {
+        UserDetail userDetail = userDao.userDetail(uid);
+        if (userDetail != null) {
+            return R.ok(userDetail);
+        } else {
+            return R.fail("无数据。");
         }
+    }
 
-        return R.ok(map);
+    @Override
+    public R isExist(String userId) {
+        int exist = userDao.isExist(userId);
+        if (exist > 0) {
+            return R.ok(true);
+        } else {
+            return R.fail(false);
+        }
     }
 }

@@ -18,5 +18,6 @@ public interface ArticleTypeDao {
     int save(ArticleType articleType);
     int delete(int id);
     List<ArticleType> selectAll();
-
+    Long typeNums(int typeId);
+    ArticleType findByTypeId(int id);
 }

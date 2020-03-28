@@ -15,6 +15,7 @@ class BbsDesignApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
     @Test
@@ -26,6 +27,7 @@ class BbsDesignApplicationTests {
             map.put("msg", "code不能为空！");
             return map;
         }
+
         String AppId = "wxd79e3bc4c295725f";
         String AppSecret = "09288d3990b4eaf3882dc3b5255373d1";
         String str = HttpUtil.getJson("https://api.weixin.qq.com/sns/jscode2session?appid=" + AppId + "&secret=" + AppSecret + "&js_code=" + code + "&grant_type=authorization_code");
@@ -56,5 +58,4 @@ class BbsDesignApplicationTests {
         System.out.println("__________________");
         return map;
     }
-
 }

@@ -1,6 +1,5 @@
 package com.qtt.bbs.model.dto.forum;
 
-import io.swagger.models.auth.In;
 import lombok.Data;
 
 /**
@@ -21,5 +20,7 @@ public class ArticleDto {
     private String title;
     private String content;
     private Integer origin;
-    private Integer readNum;
+    private int readNum;
+    private int likeNum;
+    private int commentNum;
 }

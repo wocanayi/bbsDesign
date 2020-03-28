@@ -1,5 +1,6 @@
 package com.qtt.bbs.dao.forum;
 
+import com.qtt.bbs.model.dto.forum.UserDetail;
 import com.qtt.bbs.model.entity.User;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -19,4 +20,12 @@ public interface UserDao {
     int updateScore(@Param("uid") String openid, @Param("score") int score);
 
     int insert(User user);
+
+    Integer getId(String appContext);
+
+    UserDetail userDetail(String uid);
+
+    int updateUserInfo(User user);
+
+    int isExist(String userId);
 }

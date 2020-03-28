@@ -6,11 +6,12 @@
         <id property="id" column="id"/>
         <result property="typeName" column="typename"/>
         <result property="info" column="info"/>
+        <result property="imageUrl" column="imageurl"/>
     </resultMap>
 
     <insert id="save">
-        insert into tb_articletype(typename, info)
-        VALUES (#{typeName}, #{info})
+        insert into tb_articletype(typename, info, imageurl)
+        VALUES (#{typeName}, #{info}, #{imageUrl})
     </insert>
 
     <delete id="delete">
@@ -19,5 +20,13 @@
 
     <select id="selectAll" resultMap="typeMap">
         select * from tb_articletype
+    </select>
+
+    <select id="findByTypeId" resultMap="typeMap">
+        select * from tb_articletype where id = #{id}
+    </select>
+
+    <select id="typeNums" resultType="Long">
+        select count(typeid) from tb_article where typeid = #{typeId} group by typeid
     </select>
 </mapper>

@@ -15,4 +15,7 @@ public interface ArticleTypeService {
     R save(ArticleType articleType);
     R delete(int id);
     R selectAll();
+    R selectTypeNums(int typeId);
+
+    R findByTypeId(int id);
 }

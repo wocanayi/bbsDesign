@@ -40,9 +40,7 @@ public class ImageController {
         String fileName = FileNameUtil.getFileName(file.getOriginalFilename());
         try {
             file.transferTo(new File("D:\\image", fileName));
-            if (null != fileName) {
-                image.setImgUrl(URL + fileName);
-            }
+            image.setImgUrl(URL + fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }

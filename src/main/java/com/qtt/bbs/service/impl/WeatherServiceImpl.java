@@ -34,24 +34,24 @@ public class WeatherServiceImpl implements WeatherService {
     @Override
     public R queryToday(String city) {
         // 1、检索Redis是否存在数据
-        if (RedissionUtil.checkHash(RedisKeyConfig.KEY_WEATHER_TODAY, city)) {
+        /*if (RedissionUtil.checkHash(RedisKeyConfig.KEY_WEATHER_TODAY, city)) {
             // 存在就获取数据
             String str = RedissionUtil.getHashVal(RedisKeyConfig.KEY_WEATHER_TODAY, city);
             // 转换为对象 返回
             return R.ok(JSON.parseObject(str, Weather.class));
-        } else {
+        } else {*/
             // Redis没有数据
             // 2、查询数据库
             Weather weather = weatherDao.getByCityAndCdate(city, new Date());
             if (null != weather) {
                 // 这个城市的今日天气信息存在
                 // 同步数据到redis 需要校验是不是第一次 第一次设置有效期、
-                if (!RedissionUtil.checkKey(RedisKeyConfig.KEY_WEATHER_TODAY)) {
+                /*if (!RedissionUtil.checkKey(RedisKeyConfig.KEY_WEATHER_TODAY)) {
                     // 创建并设置有效期 当日有效 24-now
                     RedissionUtil.saveHash(RedisKeyConfig.KEY_WEATHER_TODAY, city, JSON.toJSONString(weather), DateUtil.getSeconds());
                 } else {
                     RedissionUtil.saveHash(RedisKeyConfig.KEY_WEATHER_TODAY, city, JSON.toJSONString(weather));
-                }
+                }*/
                 return R.ok(weather);
             } else {
                 // 数据库不存在
@@ -79,18 +79,18 @@ public class WeatherServiceImpl implements WeatherService {
                         // 再将数据存储到Redis
                         // 这个城市的今日天气信息存在
                         // 同步数据到Redis需要校验是不是第一次 第一次设置有效期
-                        if (!RedissionUtil.checkKey(RedisKeyConfig.KEY_WEATHER_TODAY)) {
+                        /*if (!RedissionUtil.checkKey(RedisKeyConfig.KEY_WEATHER_TODAY)) {
                             //创建并设置有效期  当日有效  24-now
                             RedissionUtil.saveHash(RedisKeyConfig.KEY_WEATHER_TODAY,
                                     city, JSON.toJSONString(weather1), DateUtil.getSeconds());
                         } else {
                             RedissionUtil.saveHash(RedisKeyConfig.KEY_WEATHER_TODAY, city, JSON.toJSONString(weather1));
-                        }
+                        }*/
                         return R.ok(weather1);
                     }
                 }
             }
-        }
+       // }
         return R.fail("城市异常！");
     }
 }

@@ -16,7 +16,10 @@ public interface ArticleService {
     R delete(int id);
     R findById(int id);
     R findByUid(String uid);
+    R selectFollow(String uid);
     R selectAll();
     R getArticleByPage(int page, int pageSize);
     R fuzzySearch(String title, String content);
+    R selectTop();
+    R findByType(int typeId);
 }

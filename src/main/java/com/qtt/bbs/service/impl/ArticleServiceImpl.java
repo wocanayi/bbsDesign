@@ -1,11 +1,11 @@
 package com.qtt.bbs.service.impl;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.qtt.bbs.common.vo.R;
 import com.qtt.bbs.dao.forum.ArticleDao;
 import com.qtt.bbs.model.dto.forum.ArticleDto;
 import com.qtt.bbs.model.entity.Article;
+import com.qtt.bbs.model.entity.PageBean;
 import com.qtt.bbs.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,7 +55,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public R findById(int id) {
-        Article article = articleDao.findById(id);
+        ArticleDto article = articleDao.findById(id);
         if (null != article) {
             // 添加帖子浏览量
             articleDao.addReadNum(id);
@@ -77,6 +77,16 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public R selectFollow(String uid) {
+        List<ArticleDto> articleDtos = articleDao.selectFollow(uid);
+        if (null == articleDtos) {
+            return R.fail("无关注人帖子。");
+        } else {
+            return R.ok(articleDtos);
+        }
+    }
+
+    @Override
     public R selectAll() {
         List<ArticleDto> articles = articleDao.selectAll();
         if (null == articles) {
@@ -88,9 +98,15 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public R getArticleByPage(int page, int pageSize) {
-        PageHelper.startPage(page, pageSize);
-        Page<ArticleDto> articles = articleDao.getArticles();
-        return R.ok(articles);
+        PageBean<ArticleDto> lists = new PageBean<>();
+        long total = articleDao.articleNum();
+        lists.setCurrentPage(page);
+        lists.setTotalPage((int) Math.ceil((double) total / pageSize));
+        lists.setTotalNum(total);
+        lists.setLists(articleDao.getArticles(page, pageSize));
+        // PageHelper.startPage(page, pageSize);
+        // Page<ArticleDto> articles = articleDao.getArticles();
+        return R.ok(lists);
     }
 
     @Override
@@ -100,6 +116,26 @@ public class ArticleServiceImpl implements ArticleService {
             return R.ok(articleDtos);
         } else {
             return R.fail("暂未查到你所要的数据。");
+        }
+    }
+
+    @Override
+    public R selectTop() {
+        List<ArticleDto> articleDtos = articleDao.selectTop();
+        if (null != articleDtos) {
+            return R.ok(articleDtos);
+        } else {
+            return R.fail("无数据。");
+        }
+    }
+
+    @Override
+    public R findByType(int typeId) {
+        List<ArticleDto> articleDtos = articleDao.findByType(typeId);
+        if (null != articleDtos) {
+            return R.ok(articleDtos);
+        } else {
+            return R.fail("暂无数据。");
         }
     }
 }
