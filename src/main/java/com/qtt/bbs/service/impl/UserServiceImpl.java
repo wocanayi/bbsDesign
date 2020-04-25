@@ -3,8 +3,6 @@ package com.qtt.bbs.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.qtt.bbs.common.system.AppContext;
-import com.qtt.bbs.common.util.AesCbcUtil;
-import com.qtt.bbs.common.util.HttpUtil;
 import com.qtt.bbs.common.vo.R;
 import com.qtt.bbs.dao.forum.ScoreDao;
 import com.qtt.bbs.dao.forum.UserDao;
@@ -22,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Project name：bbsDesign
@@ -133,12 +129,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public R findByUid(String uid) {
+        User user = userDao.findByUid(uid);
+        if (user != null) {
+            return R.ok(user);
+        } else {
+            return R.fail("无数据。");
+        }
+    }
+
+    @Override
     public R isExist(String userId) {
-        int exist = userDao.isExist(userId);
-        if (exist > 0) {
+        User exist = userDao.isExist(userId);
+        if (exist.getNickName() != null) {
             return R.ok(true);
         } else {
             return R.fail(false);
+        }
+    }
+
+    @Override
+    public R modifyUserInfo(User user) {
+        int i = userDao.modifyInfo(user);
+        if (i > 0) {
+            return R.ok("成功！");
+        } else {
+            return R.fail("失败！");
         }
     }
 }

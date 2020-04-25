@@ -25,7 +25,10 @@ public class FollowServiceImpl implements FollowService {
     private FollowDao followDao;
 
     @Override
-    public R addFollow(Follow follow) {
+    public R addFollow(String uid, String followId) {
+        Follow follow = new Follow();
+        follow.setUid(uid);
+        follow.setFollowId(followId);
         int i = followDao.addFollow(follow);
         if (i > 0) {
             return R.ok("关注成功！");
@@ -35,8 +38,8 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public R delFollow(Follow follow) {
-        int i = followDao.delFollow(follow);
+    public R delFollow(int id) {
+        int i = followDao.delFollow(id);
         if (i > 0) {
             return R.ok("取消成功！");
         } else {
@@ -51,6 +54,38 @@ public class FollowServiceImpl implements FollowService {
             return R.ok(followDtos);
         } else {
             return R.fail("暂无关注！");
+        }
+    }
+
+    @Override
+    public R idFollowed(String uid, String followId) {
+        int followed = followDao.isFollowed(uid, followId);
+        if (followed > 0) {
+            return R.ok(true);
+        } else {
+            return R.fail(false);
+        }
+    }
+
+    @Override
+    public R followNums(String uid) {
+        int i = followDao.followNums(uid);
+        return R.ok(i);
+    }
+
+    @Override
+    public R fansNums(String followId) {
+        int i = followDao.fansNums(followId);
+        return R.ok(i);
+    }
+
+    @Override
+    public R allFans(String followId) {
+        List<FollowDto> allFans = followDao.allFans(followId);
+        if (null != allFans) {
+            return R.ok(allFans);
+        } else {
+            return R.fail("暂无粉丝！");
         }
     }
 }

@@ -75,7 +75,7 @@ public class WeatherServiceImpl implements WeatherService {
                         weather1.setWindpower(weatherDto.getWindpower());
                         weather1.setCtime(new Date());
                         // 存储到Mysql
-                        weatherDao.save(weather1);
+                        //weatherDao.save(weather1);
                         // 再将数据存储到Redis
                         // 这个城市的今日天气信息存在
                         // 同步数据到Redis需要校验是不是第一次 第一次设置有效期

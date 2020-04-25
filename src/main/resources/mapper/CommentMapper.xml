@@ -23,11 +23,15 @@
 
     <select id="selectByAid" resultType="com.qtt.bbs.model.dto.forum.CommentDto">
         select c.*, u.avatarurl, u.nickname
-        from tb_comment c, tb_user u where c.uid = u.uid and c.articleid = #{aid}
+        from tb_comment c, tb_user u where c.authorid = u.uid and c.fatherid = 0 and c.articleid = #{aid}
     </select>
 
     <select id="findByFatherId" resultType="com.qtt.bbs.model.dto.forum.CommentDto">
         select c.*, u.avatarurl, u.nickname
-        from tb_comment c, tb_user u where c.uid = u.uid and c.fatherid = #{fid}
+        from tb_comment c, tb_user u where c.authorid = u.uid and c.fatherid = #{fid}
+    </select>
+
+    <select id="commentNum" resultType="int">
+        select count(1) from tb_comment where articleid = #{aid}
     </select>
 </mapper>

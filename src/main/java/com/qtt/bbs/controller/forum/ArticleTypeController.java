@@ -9,7 +9,9 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 
@@ -31,8 +33,13 @@ public class ArticleTypeController {
 
     @ApiOperation(value = "添加帖子类型加图片", notes = "添加帖子类型加图片")
     @PostMapping("/type/createType.do")
-    public R createType(ArticleType articleType, MultipartFile file) {
+    public R createType(HttpServletRequest request, @RequestParam String uid, @RequestParam String typename,
+                        @RequestParam String info, @RequestParam String reason) {
         String URL = "http://localhost:8081/images/";
+        ArticleType articleType = new ArticleType();
+        MultipartHttpServletRequest req = (MultipartHttpServletRequest) request;
+        MultipartFile file = req.getFile("img");
+        assert file != null;
         String fileName = FileNameUtil.getFileName(file.getOriginalFilename());
         try {
             file.transferTo(new File("D:\\image", fileName));
@@ -40,6 +47,10 @@ public class ArticleTypeController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        articleType.setInfo(info);
+        articleType.setTypeName(typename);
+        articleType.setUid(uid);
+        articleType.setReason(reason);
         return typeService.save(articleType);
     }
 
@@ -65,5 +76,23 @@ public class ArticleTypeController {
     @GetMapping("/type/articleNums.do")
     public R articleTypeNums(@RequestParam int typeId) {
         return typeService.selectTypeNums(typeId);
+    }
+
+    @ApiOperation(value = "我加入的社区", notes = "我加入的社区")
+    @GetMapping("/type/joinedTypes.do")
+    public R joinedTypes(@RequestParam String uid) {
+        return typeService.joinedTypes(uid);
+    }
+
+    @ApiOperation(value = "我创建的社区", notes = "我创建的社区")
+    @GetMapping("/type/createdTypes.do")
+    public R createdTypes(@RequestParam String uid) {
+        return typeService.createdTypes(uid);
+    }
+
+    @ApiOperation(value = "根据帖子类型查找帖子", notes = "根据帖子类型查找帖子")
+    @GetMapping("/type/getArticlesByType.do")
+    public R getArticlesByType(@RequestParam int id) {
+        return typeService.getArticlesByType(id);
     }
 }

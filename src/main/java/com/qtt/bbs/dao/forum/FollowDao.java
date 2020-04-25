@@ -17,6 +17,10 @@ import java.util.List;
 @Repository
 public interface FollowDao {
     int addFollow(Follow follow);
-    int delFollow(Follow follow);
+    int delFollow(int id);
     List<FollowDto> allFollows(String uid);
+    int isFollowed(String uid, String followId);
+    int followNums(String uid);
+    int fansNums(String followId);
+    List<FollowDto> allFans(String followId);
 }

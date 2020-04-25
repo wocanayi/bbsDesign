@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtt.bbs.dao.forum.VideoDao">
+    <resultMap id="videoMap" type="com.qtt.bbs.model.entity.Video">
+        <id property="id" column="id"/>
+        <result property="videoName" column="videoname"/>
+        <result property="introduce" column="introduce"/>
+        <result property="videoUrl" column="videourl"/>
+        <result property="readNum" column="readnum"/>
+        <result property="ctime" column="ctime"/>
+        <result property="uid" column="uid"/>
+    </resultMap>
+
+    <insert id="uploadVideo">
+        insert into tb_video(videoname, introduce, videourl, readnum, ctime)
+        VALUES (#{videoName}, #{introduce}, #{videoUrl}, 0, NOW())
+    </insert>
+
+    <select id="videoList" resultType="com.qtt.bbs.model.dto.forum.VideoDto">
+        select v.*, u.nickname from tb_video v, tb_user u where v.uid = u.uid
+    </select>
+
+    <select id="getVideoInfo" resultMap="videoMap">
+        select * from tb_video where id = #{id}
+    </select>
+
+</mapper>

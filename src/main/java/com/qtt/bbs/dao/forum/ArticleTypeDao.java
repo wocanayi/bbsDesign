@@ -1,5 +1,6 @@
 package com.qtt.bbs.dao.forum;
 
+import com.qtt.bbs.model.dto.forum.ArticleDto;
 import com.qtt.bbs.model.entity.ArticleType;
 import org.springframework.stereotype.Repository;
 
@@ -20,4 +21,7 @@ public interface ArticleTypeDao {
     List<ArticleType> selectAll();
     Long typeNums(int typeId);
     ArticleType findByTypeId(int id);
+    List<ArticleType> joinedTypes(String uid);
+    List<ArticleDto> getArticlesByType(int id);
+    List<ArticleType> createdTypes(String uid);
 }

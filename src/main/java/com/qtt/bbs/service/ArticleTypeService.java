@@ -16,6 +16,8 @@ public interface ArticleTypeService {
     R delete(int id);
     R selectAll();
     R selectTypeNums(int typeId);
-
     R findByTypeId(int id);
+    R joinedTypes(String uid);
+    R getArticlesByType(int id);
+    R createdTypes(String uid);
 }

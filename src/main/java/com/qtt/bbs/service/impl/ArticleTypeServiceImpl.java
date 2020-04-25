@@ -2,6 +2,7 @@ package com.qtt.bbs.service.impl;
 
 import com.qtt.bbs.common.vo.R;
 import com.qtt.bbs.dao.forum.ArticleTypeDao;
+import com.qtt.bbs.model.dto.forum.ArticleDto;
 import com.qtt.bbs.model.entity.ArticleType;
 import com.qtt.bbs.service.ArticleTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,36 @@ public class ArticleTypeServiceImpl implements ArticleTypeService {
             return R.ok(byTypeId);
         } else {
             return R.fail();
+        }
+    }
+
+    @Override
+    public R joinedTypes(String uid) {
+        List<ArticleType> articleTypes = typeDao.joinedTypes(uid);
+        if (articleTypes != null) {
+            return R.ok(articleTypes);
+        } else {
+            return R.fail();
+        }
+    }
+
+    @Override
+    public R getArticlesByType(int id) {
+        List<ArticleDto> articlesByType = typeDao.getArticlesByType(id);
+        if (articlesByType != null) {
+            return R.ok(articlesByType);
+        } else {
+            return R.fail("暂无帖子信息。");
+        }
+    }
+
+    @Override
+    public R createdTypes(String uid) {
+        List<ArticleType> articleTypes = typeDao.createdTypes(uid);
+        if (articleTypes != null) {
+            return R.ok(articleTypes);
+        } else {
+            return R.fail("暂无帖子信息。");
         }
     }
 }

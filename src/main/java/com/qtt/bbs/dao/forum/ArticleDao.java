@@ -1,6 +1,7 @@
 package com.qtt.bbs.dao.forum;
 
 import com.github.pagehelper.Page;
+import com.qtt.bbs.model.dto.en.ImgList;
 import com.qtt.bbs.model.dto.forum.ArticleDto;
 import com.qtt.bbs.model.entity.Article;
 import org.springframework.stereotype.Repository;
@@ -23,6 +24,7 @@ public interface ArticleDao {
     List<ArticleDto> findByUid(String uid);
     List<ArticleDto> selectAll();
     Long articleNum();
+    List<ImgList> imgList(String uid);
     /**
      * 查询关注人的帖子
      * @param uid
@@ -35,7 +37,7 @@ public interface ArticleDao {
      * 带分页的
      * @return
      */
-    Page<ArticleDto> getArticles(int page, int size);
+    Page<ArticleDto> getArticles(int index, int size);
 
     /**
      * 根据标题或内容进行模糊查询
@@ -48,4 +50,12 @@ public interface ArticleDao {
     List<ArticleDto> selectTop();
 
     List<ArticleDto> findByType(int typeId);
+
+    int reduceLikeNum(int aid);
+
+    int addLikeNum(int aid);
+
+    List<ArticleDto> likedArticle(String uid);
+
+    int setTop(int aid);
 }

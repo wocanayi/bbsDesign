@@ -14,4 +14,6 @@ import com.qtt.bbs.model.entity.Like;
 public interface LikeService {
     R addDelLike(Like like);
     R likeNum(int aid);
+    R isLiked(int aid, String uid);
+    R delMyLike(int id);
 }

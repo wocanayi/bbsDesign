@@ -9,8 +9,10 @@
         <result property="content" column="content"/>
         <result property="ctime" column="ctime"/>
         <result property="origin" column="origin"/>
-        <result property="info" column="info"/>
+        <result property="imgUrl" column="imgurl"/>
         <result property="readNum" column="readnum"/>
+        <result property="likeNum" column="likenum"/>
+        <result property="commentNum" column="commentnum"/>
         <result property="uid" column="uid"/>
     </resultMap>
 
@@ -18,8 +20,8 @@
         <selectKey resultType="int" keyProperty="id" order="AFTER">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        insert into tb_article(typeid, title, content, ctime, origin, info, readnum, uid)
-        VALUES (#{typeId}, #{title}, #{content}, NOW(), #{origin}, #{info}, 0, #{uid})
+        insert into tb_article(typeid, title, content, ctime, origin, imgurl, readnum, uid)
+        VALUES (#{typeId}, #{title}, #{content}, NOW(), #{origin}, #{imgUrl}, 0, #{uid})
     </insert>
 
     <delete id="delete" parameterType="int">
@@ -33,17 +35,17 @@
                a.content,
                a.ctime,
                a.origin,
-               a.info,
+               a.imgurl,
                a.readnum,
                a.uid,
-               (select count(1) from tb_like where aid = #{id} group by aid) likeNum,
-               (select count(1) from tb_comment where articleid = #{id} group by articleid) commentNum,
+               a.likenum,
+               a.commentnum,
                a.readnum,
                u.nickname,
                u.avatarurl
         from tb_article a,
              tb_user u
-        where a.uid = u.uid and a.id = #{id}
+        where a.uid = u.uid and a.id = #{id} order by a.id desc
     </select>
 
     <select id="findByUid" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
@@ -53,20 +55,28 @@
                a.content,
                a.ctime,
                a.origin,
-               a.info,
+               a.imgurl,
                a.readnum,
                a.uid,
                a.readnum,
-               (select count(1) from tb_like where uid = #{uid} group by aid) likeNum,
-               (select count(1) from tb_comment where uid = #{uid} group by articleid) commentNum,
+               a.ctime,
+               a.likenum,
+               a.commentnum,
                u.nickname,
                u.avatarurl
         from tb_article a,
              tb_user u
         where a.uid = u.uid
-          and a.uid = #{uid}
+          and a.uid = #{uid} order by a.id desc
     </select>
 
+    <select id="imgList" resultType="com.qtt.bbs.model.dto.en.ImgList">
+        select a.imgurl
+        from tb_article a,
+             tb_user u
+        where a.uid = u.uid
+          and a.uid = #{uid} order by a.id desc
+    </select>
     <select id="selectFollow" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
         select a.id,
                a.typeid,
@@ -74,12 +84,12 @@
                a.content,
                a.ctime,
                a.origin,
-               a.info,
+               a.imgurl,
                a.readnum,
                a.uid,
                a.readnum,
-               (select count(1) from tb_like where uid = #{uid} group by aid) likeNum,
-               (select count(1) from tb_comment where uid = #{uid} group by articleid) commentNum,
+               (select count(1) from tb_like where uid = #{uid}) likeNum,
+               (select count(1) from tb_comment where uid = #{uid}) commentNum,
                u.nickname,
                u.avatarurl
         from tb_article a, tb_user u where u.uid = a.uid and a.uid in (select followid from tb_follow where uid = #{uid})
@@ -88,6 +98,7 @@
     <select id="articleNum" resultType="long">
         select count(1) from tb_article a, tb_user u where u.uid = a.uid
     </select>
+
     <select id="selectAll" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
         select a.id,
                a.typeid,
@@ -95,7 +106,7 @@
                a.content,
                a.ctime,
                a.origin,
-               a.info,
+               a.imgurl,
                a.readnum,
                a.uid,
                a.readnum,
@@ -103,7 +114,7 @@
                u.avatarurl
         from tb_article a,
              tb_user u
-        where a.uid = u.uid
+        where a.uid = u.uid order by a.id desc
     </select>
 
     <select id="getArticles" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
@@ -113,7 +124,7 @@
                a.content,
                a.ctime,
                a.origin,
-               a.info,
+               a.imgurl,
                a.readnum,
                a.uid,
                a.readnum,
@@ -121,7 +132,7 @@
                u.avatarurl
         from tb_article a,
              tb_user u
-        where a.uid = u.uid limit #{page}, #{size}
+        where a.uid = u.uid order by a.id desc limit #{index}, #{size}
     </select>
 
     <select id="selectTop" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
@@ -131,7 +142,7 @@
                a.content,
                a.ctime,
                a.origin,
-               a.info,
+               a.imgurl,
                a.readnum,
                a.uid,
                a.readnum,
@@ -142,6 +153,37 @@
         where a.uid = u.uid order by readnum desc
     </select>
 
+    <update id="reduceLikeNum">
+        update tb_article set likenum = likenum - 1 where id = #{aid}
+    </update>
+
+    <update id="addLikeNum">
+        update tb_article set likenum = likenum + 1 where id = #{aid}
+    </update>
+
+    <update id="setTop">
+        update tb_article set istop = 1 where id = #{aid}
+    </update>
+
+    <select id="likedArticle" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
+        select a.id,
+               a.typeid,
+               a.title,
+               a.content,
+               a.ctime,
+               a.origin,
+               a.imgurl,
+               a.readnum,
+               a.uid,
+               a.readnum,
+               a.likenum,
+               a.commentnum,
+               u.nickname,
+               u.avatarurl
+        from tb_article a,
+             tb_user u where u.uid = a.uid and a.id in (select aid from tb_like where uid = #{uid} order by aid desc)
+    </select>
+
     <select id="findByType" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
         select a.id,
                a.typeid,
@@ -149,7 +191,7 @@
                a.content,
                a.ctime,
                a.origin,
-               a.info,
+               a.imgurl,
                a.readnum,
                a.uid,
                a.readnum,
@@ -157,7 +199,7 @@
                u.avatarurl
         from tb_article a,
              tb_user u
-        where a.uid = u.uid and typeid = #{typeId}
+        where a.uid = u.uid and typeid = #{typeId} order by a.id desc
     </select>
 
     <select id="fuzzySearch" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
@@ -167,7 +209,7 @@
                a.content,
                a.ctime,
                a.origin,
-               a.info,
+               a.imgurl,
                a.readnum,
                a.uid,
                u.nickname,

@@ -19,6 +19,10 @@ public interface LikeDao {
     Like selectByUid(String uid, int aid);
     // 取消点赞
     int delLike(int id);
+
+    int delMyLike(int aid);
     // 某篇文章的点赞数量
-    Integer likeNum(int aid);
+    int likeNum(int aid);
+
+    int isLiked(int aid, String uid);
 }

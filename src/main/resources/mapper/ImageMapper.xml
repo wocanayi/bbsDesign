@@ -11,7 +11,7 @@
     </resultMap>
 
     <insert id="uploadPictures">
-        insert into tb_image(imgurl, ctime, info, aid) VALUES
+        insert into tb_image(imgurl, ctime, info, uid) VALUES
         <!--<foreach collection="list" item="item" index="index" separator=",">-->
             (#{imgUrl}, NOW(), #{info}, #{aid})
         <!--</foreach>-->

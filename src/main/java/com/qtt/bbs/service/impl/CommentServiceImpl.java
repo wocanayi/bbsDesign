@@ -27,7 +27,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public R addComment(Comment comment) {
         if (commentDao.addComment(comment) > 0) {
-            return R.ok(commentDao.addComment(comment));
+            return R.ok("成功！");
         } else {
             return R.fail("评论失败！");
         }
@@ -51,5 +51,11 @@ public class CommentServiceImpl implements CommentService {
         } else {
             return R.ok(commentList);
         }
+    }
+
+    @Override
+    public R commentNum(int aid) {
+        int i = commentDao.commentNum(aid);
+        return R.ok(i);
     }
 }

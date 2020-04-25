@@ -7,11 +7,13 @@
         <result property="typeName" column="typename"/>
         <result property="info" column="info"/>
         <result property="imageUrl" column="imageurl"/>
+        <result property="reason" column="reason"/>
+        <result property="uid" column="uid"/>
     </resultMap>
 
     <insert id="save">
-        insert into tb_articletype(typename, info, imageurl)
-        VALUES (#{typeName}, #{info}, #{imageUrl})
+        insert into tb_articletype(typename, info, imageurl, uid, reason)
+        VALUES (#{typeName}, #{info}, #{imageUrl}, #{uid}, #{reason})
     </insert>
 
     <delete id="delete">
@@ -19,7 +21,7 @@
     </delete>
 
     <select id="selectAll" resultMap="typeMap">
-        select * from tb_articletype
+        select * from tb_articletype order by id desc
     </select>
 
     <select id="findByTypeId" resultMap="typeMap">
@@ -28,5 +30,33 @@
 
     <select id="typeNums" resultType="Long">
         select count(typeid) from tb_article where typeid = #{typeId} group by typeid
+    </select>
+
+    <select id="joinedTypes" resultMap="typeMap">
+        select t.* from tb_articletype t, tb_circle c where t.id = c.tid and c.uid = #{uid}
+    </select>
+
+    <select id="createdTypes" resultMap="typeMap">
+        select * from tb_articletype where uid = #{uid}
+    </select>
+
+    <select id="getArticlesByType" resultType="com.qtt.bbs.model.dto.forum.ArticleDto">
+        select a.id,
+               a.typeid,
+               a.title,
+               a.content,
+               a.ctime,
+               a.origin,
+               a.imgurl,
+               a.readnum,
+               a.uid,
+               a.readnum,
+               a.likenum,
+               a.commentnum,
+               u.nickname,
+               u.avatarurl
+        from tb_article a,
+             tb_user u
+        where u.uid = a.uid and a.typeid = #{id}
     </select>
 </mapper>

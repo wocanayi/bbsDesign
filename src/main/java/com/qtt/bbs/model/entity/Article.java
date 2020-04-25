@@ -2,8 +2,10 @@ package com.qtt.bbs.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.hibernate.validator.constraints.EAN;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Project name：bbsDesign
@@ -22,7 +24,9 @@ public class Article {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date ctime;
     private Integer origin;
-    private String info;
+    private String imgUrl;
     private Integer readNum;
+    private Integer likeNum;
+    private Integer commentNum;
     private String uid;
 }

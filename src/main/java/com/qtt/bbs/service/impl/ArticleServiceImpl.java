@@ -1,8 +1,8 @@
 package com.qtt.bbs.service.impl;
 
-import com.github.pagehelper.PageInfo;
 import com.qtt.bbs.common.vo.R;
 import com.qtt.bbs.dao.forum.ArticleDao;
+import com.qtt.bbs.model.dto.en.ImgList;
 import com.qtt.bbs.model.dto.forum.ArticleDto;
 import com.qtt.bbs.model.entity.Article;
 import com.qtt.bbs.model.entity.PageBean;
@@ -10,7 +10,6 @@ import com.qtt.bbs.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,17 +27,10 @@ public class ArticleServiceImpl implements ArticleService {
     private ArticleDao articleDao;
 
     @Override
-    public R save(ArticleDto articleDto) {
-        Article article = new Article();
-        article.setTypeId(articleDto.getTypeId());
-        article.setTitle(articleDto.getTitle());
-        article.setContent(articleDto.getContent());
-        article.setCtime(new Date());
-        article.setOrigin(articleDto.getOrigin());
-        article.setUid(articleDto.getUid());
-
-        if (articleDao.save(article) > 0) {
-            return R.ok(article);
+    public R save(Article article) {
+        int save = articleDao.save(article);
+        if (save > 0) {
+            return R.ok("成功！");
         } else {
             return R.fail("发帖失败!");
         }
@@ -103,9 +95,8 @@ public class ArticleServiceImpl implements ArticleService {
         lists.setCurrentPage(page);
         lists.setTotalPage((int) Math.ceil((double) total / pageSize));
         lists.setTotalNum(total);
-        lists.setLists(articleDao.getArticles(page, pageSize));
-        // PageHelper.startPage(page, pageSize);
-        // Page<ArticleDto> articles = articleDao.getArticles();
+        /*分页查询limit后的两个参数含义： 起始下标(（page-1）*size), 每页的条数*/
+        lists.setLists(articleDao.getArticles((page-1)*pageSize, pageSize));
         return R.ok(lists);
     }
 
@@ -136,6 +127,36 @@ public class ArticleServiceImpl implements ArticleService {
             return R.ok(articleDtos);
         } else {
             return R.fail("暂无数据。");
+        }
+    }
+
+    @Override
+    public R imgList(String uid) {
+        List<ImgList> imgLists = articleDao.imgList(uid);
+        if (null != imgLists) {
+            return R.ok(imgLists);
+        } else {
+            return R.fail("无信息。");
+        }
+    }
+
+    @Override
+    public R likedArticle(String uid) {
+        List<ArticleDto> articleDtos = articleDao.likedArticle(uid);
+        if (articleDtos != null) {
+            return R.ok(articleDtos);
+        } else {
+            return R.fail("暂无点赞哟。");
+        }
+    }
+
+    @Override
+    public R setTop(int aid) {
+        int i = articleDao.setTop(aid);
+        if (i > 0) {
+            return R.ok("设置成功");
+        } else {
+            return R.fail("设置失败");
         }
     }
 }

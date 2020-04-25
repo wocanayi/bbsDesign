@@ -24,8 +24,28 @@
     </update>
 
     <select id="getId" resultType="Integer">
-        select id from tb_user where uid = #{uid}
+        select id
+        from tb_user
+        where uid = #{uid}
     </select>
+
+    <select id="findByUid" resultMap="masterMap">
+        select *
+        from tb_user
+        where uid = #{uid}
+    </select>
+
+    <update id="modifyInfo" parameterType="com.qtt.bbs.model.entity.User">
+        update tb_user
+        <set>
+            <if test="nickName != null">nickname=#{nickName},</if>
+
+            <if test="gender != null">gender=#{gender},</if>
+
+            <if test="city != null">city=#{city},</if>
+        </set>
+        where uid = #{uid}
+    </update>
 
     <insert id="insert">
         insert into tb_user(uid, nickname, gender, city, avatarurl, unionid, balance)
@@ -33,16 +53,24 @@
     </insert>
 
     <select id="userDetail" resultType="com.qtt.bbs.model.dto.forum.UserDetail">
-        select u.avatarurl, u.nickname, (select count(1) from tb_circle where uid = #{uid} group by uid) circleNum,
+        select u.uid,
+               u.gender,
+               u.avatarurl,
+               u.nickname,
+               (select count(1) from tb_circle where uid = #{uid} group by uid)           circleNum,
                (select count(1) from tb_follow where followid = #{uid} group by followid) fansNum,
-               (select count(1) from tb_follow where uid = #{uid} group by uid) followNum from tb_user u where uid = #{uid}
+               (select count(1) from tb_follow where uid = #{uid} group by uid)           followNum
+        from tb_user u
+        where uid = #{uid}
     </select>
 
     <update id="updateUserInfo">
         update tb_user set nickname = #{nickName}, gender = #{gender}, city = #{city}, avatarurl = #{avatarUrl} where uid = #{uid}
     </update>
 
-    <select id="isExist" resultType="int">
-        select count(1) from tb_user where uid = #{userId}
+    <select id="isExist" resultMap="masterMap">
+        select *
+        from tb_user
+        where uid = #{userId}
     </select>
 </mapper>

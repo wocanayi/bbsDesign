@@ -16,4 +16,6 @@ public class ArticleType {
     private String typeName;
     private String info;
     private String imageUrl;
+    private String uid;
+    private String reason;
 }

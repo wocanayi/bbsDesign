@@ -12,6 +12,7 @@ import lombok.Data;
  */
 @Data
 public class FollowDto {
+    private int id;
     private String uid;
     private String followId;
     private String nickname;

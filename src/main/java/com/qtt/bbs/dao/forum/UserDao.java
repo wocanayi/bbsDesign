@@ -27,5 +27,9 @@ public interface UserDao {
 
     int updateUserInfo(User user);
 
-    int isExist(String userId);
+    User isExist(String userId);
+
+    User findByUid(String uid);
+
+    int modifyInfo(User user);
 }

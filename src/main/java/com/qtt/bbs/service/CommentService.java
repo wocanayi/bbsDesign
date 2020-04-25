@@ -15,4 +15,5 @@ public interface CommentService {
     R addComment(Comment comment);
     R selectByAid(int aid);
     R selectByFid(int fid);
+    R commentNum(int aid);
 }

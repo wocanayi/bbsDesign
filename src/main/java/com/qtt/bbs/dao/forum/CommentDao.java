@@ -21,4 +21,6 @@ public interface CommentDao {
     List<CommentDto> selectByAid(int aid);
 
     List<CommentDto> findByFatherId(int fid);
+
+    int commentNum(int aid);
 }

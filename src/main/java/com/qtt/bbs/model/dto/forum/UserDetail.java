@@ -12,7 +12,9 @@ import lombok.Data;
  */
 @Data
 public class UserDetail {
+    private String uid;
     private String avatarUrl;
+    private int gender;
     private String nickName;
     private int circleNum; // 圈子数
     private int followNum; // 关注数

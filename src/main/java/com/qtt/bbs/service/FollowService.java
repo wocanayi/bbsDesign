@@ -12,9 +12,17 @@ import com.qtt.bbs.model.entity.Follow;
  * @author ：XC
  */
 public interface FollowService {
-    R addFollow(Follow follow);
+    R addFollow(String uid, String followId);
 
-    R delFollow(Follow follow);
+    R delFollow(int id);
 
     R allFollows(String uid);
+
+    R idFollowed(String uid, String followId);
+
+    R followNums(String uid);
+
+    R fansNums(String followId);
+
+    R allFans(String followId);
 }

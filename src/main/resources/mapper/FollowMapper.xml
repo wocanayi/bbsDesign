@@ -9,7 +9,8 @@
     </resultMap>
 
     <insert id="addFollow">
-        insert tb_follow(uid, followid) VALUES (#{uid}, #{followId})
+        insert tb_follow(uid, followid)
+        VALUES (#{uid}, #{followId})
     </insert>
 
     <delete id="delFollow">
@@ -17,7 +18,35 @@
     </delete>
 
     <select id="allFollows" resultType="com.qtt.bbs.model.dto.forum.FollowDto">
-        select f.uid, f.followid, u.nickname, u.avatarurl
-        from tb_follow f, tb_user u where u.uid = f.uid and u.uid = #{uid}
+        select f.id, f.uid, f.followid, u.avatarurl, u.nickname
+        from tb_follow f
+                 left join tb_user u on f.followid = u.uid
+        where f.uid = #{uid}
+    </select>
+
+    <select id="allFans" resultType="com.qtt.bbs.model.dto.forum.FollowDto">
+        select f.id, f.uid, f.followid, u.avatarurl, u.nickname
+        from tb_follow f
+                 left join tb_user u on f.uid = u.uid
+        where f.followid = #{followId}
+    </select>
+
+    <select id="isFollowed" resultType="int">
+        select count(1)
+        from tb_follow
+        where uid = #{uid}
+          and followid = #{followId}
+    </select>
+
+    <select id="followNums" resultType="int">
+        select count(1)
+        from tb_follow
+        where uid = #{uid}
+    </select>
+
+    <select id="fansNums" resultType="int">
+        select count(1)
+        from tb_follow
+        where followid = #{followId}
     </select>
 </mapper>

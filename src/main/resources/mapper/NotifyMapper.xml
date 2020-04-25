@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtt.bbs.dao.forum.NotifyDao">
+    <resultMap id="notifyMap" type="com.qtt.bbs.model.entity.Notify">
+        <id property="id" column="id"/>
+        <result property="content" column="content"/>
+        <result property="type" column="type"/>
+        <result property="aid" column="aid"/>
+        <result property="action" column="action"/>
+        <result property="senderId" column="senderid"/>
+        <result property="senderType" column="sendertype"/>
+        <result property="uid" column="uid"/>
+        <result property="isRead" column="isread"/>
+        <result property="ctime" column="ctime"/>
+        <result property="cid" column="cid"/>
+    </resultMap>
+
+    <insert id="addNotifyMessage">
+        insert into tb_notify(type, aid, action, senderid, sendertype, uid, cid) VALUES
+                             (2, #{aid}, #{action}, #{senderId}, #{senderType}, #{uid}, #{cid})
+    </insert>
+
+    <select id="findNotifyMessageByUid" resultType="com.qtt.bbs.model.dto.forum.NotifyDto">
+        select n.id, n.aid, n.action, n.senderid, n.ctime, n.cid, u.avatarurl, u.nickname from tb_notify n, tb_user u where n.senderid = u.uid and n.uid = #{uid} and isread = 0
+    </select>
+
+    <update id="setIsRead">
+        update tb_notify set isread = 1 where id = #{nid}
+    </update>
+
+    <delete id="delMessage">
+        delete from tb_notify where id = #{nid}
+    </delete>
+</mapper>
